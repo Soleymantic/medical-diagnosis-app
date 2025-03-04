@@ -95,7 +95,7 @@ const initialPatientData: PatientData = {
   },
 }
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080/api/diagnosis";
+const API_URL = "https://drgpt-backend.onrender.com/api/diagnosis";
 
 export function DiagnosisForm() {
   const [patientData, setPatientData] = useState<PatientData>(initialPatientData)
