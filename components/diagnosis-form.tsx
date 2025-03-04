@@ -160,7 +160,7 @@ export function DiagnosisForm() {
   }
 
   const generatePrompt = (data: PatientData): string => {
-    return `Based on the patients informations, can you make a diagnosis what it can be? ${JSON.stringify(data)}. Can you suggest next steps what to do? Act like a doctor and suggest what to do. Also add a diagnostic. Add a good structure and 
+    return `Based on the patients informations, can you make a diagnosis what it can be? ${JSON.stringify(data)}. Can you suggest next steps what to do? Act like a doctor and suggest what to do. Also add a diagnostic. Can you also add the medicines which is needed for the diagnosis? Add a good structure and 
     translate it in german. `;
   }
 
