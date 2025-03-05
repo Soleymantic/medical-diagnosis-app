@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Printer, Download } from "lucide-react"
+import { ArrowLeft, Printer } from "lucide-react"
 
 interface PatientData {
   firstName: string
@@ -30,6 +30,15 @@ interface PatientData {
     palpitations: string
     shortness_of_breath: string
   }
+  orthopedics: {
+    currentPain: string
+    painLocation: string
+    painDuration: string
+    painWorsensWithMovement: string
+    painWorsensAtNight: string
+    osteoporosis: string
+    knownOrthopedicIssues: string
+  }
 }
 
 interface DiagnosisResultProps {
@@ -53,62 +62,6 @@ export function DiagnosisResult({ patientData, diagnosisText, onBack }: Diagnosi
     window.print()
   }
 
-  const handleDownload = () => {
-    const element = document.createElement("a")
-    const diagnosisReport = `
-MEDIZINISCHER DIAGNOSEBERICHT
------------------------------
-Datum: ${formatDate(new Date())}
-
-PATIENTENINFORMATIONEN:
-Name: ${patientData.firstName} ${patientData.lastName}
-Alter: ${patientData.age}
-Geschlecht: ${patientData.gender}
-
-VITALZEICHEN:
-Blutdruck: ${patientData.bloodPressure} mmHg
-Temperatur: ${patientData.temperature} °C
-Herzfrequenz: ${patientData.heartRate} bpm
-Atemfrequenz: ${patientData.respiratoryRate} Atemzüge/min
-
-KLINISCHE INFORMATIONEN:
-Symptome: ${patientData.symptoms}
-Krankengeschichte: ${patientData.medicalHistory || "Keine angegeben"}
-Allergien: ${patientData.allergies || "Keine angegeben"}
-Aktuelle Medikamente: ${patientData.currentMedications || "Keine angegeben"}
-
-FACHSPEZIFISCHE INFORMATIONEN:
-Dermatologie:
-- Hautausschlag: ${patientData.dermatology.skinRash || "Nicht angegeben"}
-- Juckreiz: ${patientData.dermatology.itching || "Nicht angegeben"}
-- Hautveränderungen: ${patientData.dermatology.skinChanges || "Nicht angegeben"}
-
-Gastroenterologie:
-- Bauchschmerzen: ${patientData.gastroenterology.abdominalPain || "Nicht angegeben"}
-- Übelkeit: ${patientData.gastroenterology.nausea || "Nicht angegeben"}
-- Veränderungen des Stuhlgangs: ${patientData.gastroenterology.bowelChanges || "Nicht angegeben"}
-
-Kardiologie:
-- Brustschmerzen: ${patientData.cardiology.chestPain || "Nicht angegeben"}
-- Herzklopfen: ${patientData.cardiology.palpitations || "Nicht angegeben"}
-- Kurzatmigkeit: ${patientData.cardiology.shortness_of_breath || "Nicht angegeben"}
-
-DIAGNOSE:
-${diagnosisText}
-
-HAFTUNGSAUSSCHLUSS:
-Diese Diagnose wurde KI-unterstützt erstellt und sollte von einem Gesundheitsexperten überprüft werden.
-Sie ersetzt keine professionelle ärztliche Beratung, Diagnose oder Behandlung.
-    `
-
-    const file = new Blob([diagnosisReport], { type: "text/plain" })
-    element.href = URL.createObjectURL(file)
-    element.download = `diagnose_${patientData.lastName}_${new Date().toISOString().split("T")[0]}.txt`
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
-  }
-
   return (
     <Card className="bg-white">
       <CardHeader className="bg-blue-50 border-b">
@@ -118,10 +71,6 @@ Sie ersetzt keine professionelle ärztliche Beratung, Diagnose oder Behandlung.
             <Button variant="outline" size="sm" onClick={handlePrint}>
               <Printer className="h-4 w-4 mr-2" />
               Drucken
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleDownload}>
-              <Download className="h-4 w-4 mr-2" />
-              Herunterladen
             </Button>
           </div>
         </div>
@@ -232,6 +181,31 @@ Sie ersetzt keine professionelle ärztliche Beratung, Diagnose oder Behandlung.
                   <li>
                     <span className="font-medium">Kurzatmigkeit:</span>{" "}
                     {patientData.cardiology.shortness_of_breath || "Nicht angegeben"}
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-800">Orthopädie</h4>
+                <ul className="space-y-1 text-gray-600">
+                  <li>
+                    <span className="font-medium">Aktuelle Beschwerden:</span>{" "}
+                    {patientData.orthopedics.currentPain || "Nicht angegeben"}
+                  </li>
+                  <li>
+                    <span className="font-medium">Körperregion:</span>{" "}
+                    {patientData.orthopedics.painLocation || "Nicht angegeben"}
+                  </li>
+                  <li>
+                    <span className="font-medium">Beschwerden seit:</span>{" "}
+                    {patientData.orthopedics.painDuration || "Nicht angegeben"}
+                  </li>
+                  <li>
+                    <span className="font-medium">Schmerzen bei Bewegung:</span>{" "}
+                    {patientData.orthopedics.painWorsensWithMovement || "Nicht angegeben"}
+                  </li>
+                  <li>
+                    <span className="font-medium">Schmerzen in der Nacht:</span>{" "}
+                    {patientData.orthopedics.painWorsensAtNight || "Nicht angegeben"}
                   </li>
                 </ul>
               </div>

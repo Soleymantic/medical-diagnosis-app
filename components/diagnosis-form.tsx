@@ -15,7 +15,7 @@ import { Loader2 } from "lucide-react"
 import { DiagnosisResult } from "@/components/diagnosis-result"
 
 type PatientDataNestedFields = {
-  [K in "dermatology" | "gastroenterology" | "cardiology"]: {
+  [K in "dermatology" | "gastroenterology" | "cardiology" | "orthopedics"]: {
     [field: string]: string
   }
 }
@@ -63,6 +63,13 @@ interface PatientData {
     palpitations: string
     shortness_of_breath: string
   }
+  orthopedics: {
+    currentPain: string
+    painLocation: string
+    painDuration: string
+    painWorsensWithMovement: string
+    painWorsensAtNight: string
+  }
 }
 
 const initialPatientData: PatientData = {
@@ -93,6 +100,13 @@ const initialPatientData: PatientData = {
     palpitations: "",
     shortness_of_breath: "",
   },
+  orthopedics: {
+    currentPain: "",
+    painLocation: "",
+    painDuration: "",
+    painWorsensWithMovement: "",
+    painWorsensAtNight: "",
+  }
 }
 
 const API_URL = "https://drgpt-backend.onrender.com/api/diagnosis";
@@ -108,7 +122,7 @@ export function DiagnosisForm() {
     setPatientData((prev) => ({ ...prev, [name]: value }))
   }
 
-  type NestedCategory = Extract<keyof PatientData, "dermatology" | "gastroenterology" | "cardiology">
+  type NestedCategory = Extract<keyof PatientData, "dermatology" | "gastroenterology" | "cardiology" | "orthopedics">
 
   const handleNestedInputChange = (category: NestedCategory, field: string, value: string) => {
     setPatientData((prev) => ({
@@ -125,7 +139,7 @@ export function DiagnosisForm() {
   }
 
   const isFormValid = () => {
-    const requiredFields = ["firstName", "lastName", "age", "gender", "bloodPressure", "temperature", "symptoms"]
+    const requiredFields = ["firstName", "lastName", "age", "gender"]
     return requiredFields.every((field) => patientData[field as keyof PatientData].toString().trim() !== "")
   }
 
@@ -249,7 +263,7 @@ export function DiagnosisForm() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="bloodPressure">
-                        Blood Pressure (mmHg) <span className="text-red-500">*</span>
+                        Blood Pressure (mmHg) 
                       </Label>
                       <Input
                         id="bloodPressure"
@@ -257,13 +271,12 @@ export function DiagnosisForm() {
                         placeholder="e.g., 120/80"
                         value={patientData.bloodPressure}
                         onChange={handleInputChange}
-                        required
                       />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="temperature">
-                        Temperature (°C) <span className="text-red-500">*</span>
+                        Temperature (°C) 
                       </Label>
                       <Input
                         id="temperature"
@@ -271,7 +284,6 @@ export function DiagnosisForm() {
                         placeholder="e.g., 37.0"
                         value={patientData.temperature}
                         onChange={handleInputChange}
-                        required
                       />
                     </div>
 
@@ -302,6 +314,58 @@ export function DiagnosisForm() {
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-medium mb-4">Fachspezifische Fragen</h3>
                   <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="orthopedics">
+                      <AccordionTrigger>Orthopädische Fragen</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="currentPain">Aktuelle Beschwerden</Label>
+                            <Textarea
+                              id="currentPain"
+                              value={patientData.orthopedics.currentPain}
+                              onChange={(e) => handleNestedInputChange("orthopedics", "currentPain", e.target.value)}
+                              placeholder="Beschreiben Sie die Beschwerden"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="painLocation">Körperregion</Label>
+                            <Textarea
+                              id="painLocation"
+                              value={patientData.orthopedics.painLocation}
+                              onChange={(e) => handleNestedInputChange("orthopedics", "painLocation", e.target.value)}
+                              placeholder="Welche Körperregion ist betroffen"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="painDuration">Beschwerden seit</Label>
+                            <Textarea
+                              id="painDuration"
+                              value={patientData.orthopedics.painDuration}
+                              onChange={(e) => handleNestedInputChange("orthopedics", "painDuration", e.target.value)}
+                              placeholder="z.B. 2 Woche"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="painWorsensWithMovement">Schmerzen bei Bewegung</Label>
+                            <Textarea
+                              id="painWorsensWithMovement"
+                              value={patientData.orthopedics.painWorsensWithMovement}
+                              onChange={(e) => handleNestedInputChange("orthopedics", "painWorsensWithMovement", e.target.value)}
+                              placeholder="z.B. beim Aufstehen"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="painWorsensAtNight">Schmerzen in der Nacht</Label>
+                            <Textarea
+                              id="painWorsensAtNight"
+                              value={patientData.orthopedics.painWorsensAtNight}
+                              onChange={(e) => handleNestedInputChange("orthopedics", "painWorsensAtNight", e.target.value)}
+                              placeholder="z.B. links seitlich liegend"
+                            />
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                     <AccordionItem value="dermatology">
                       <AccordionTrigger>Dermatologische Fragen</AccordionTrigger>
                       <AccordionContent>
@@ -418,7 +482,7 @@ export function DiagnosisForm() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="symptoms">
-                        Presenting Symptoms <span className="text-red-500">*</span>
+                        Presenting Symptoms 
                       </Label>
                       <Textarea
                         id="symptoms"
@@ -427,7 +491,6 @@ export function DiagnosisForm() {
                         rows={3}
                         value={patientData.symptoms}
                         onChange={handleInputChange}
-                        required
                       />
                     </div>
 
